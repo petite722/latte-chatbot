@@ -1665,10 +1665,6 @@ try:
 except Exception as e:
     st.error(f'데이터 로드 실패: {e}')
     st.stop()
-    
-for key, default in [('messages', []), ('conversation_history', []), ('is_first_turn', True)]:
-    if key not in st.session_state:
-        st.session_state[key] = default
 
 for msg in st.session_state['messages']:
     with st.chat_message(msg['role']):
