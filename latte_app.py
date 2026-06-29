@@ -1686,9 +1686,10 @@ JSON:"""
                     review_docs.append(new_doc)
                     if review_sheet:
                         review_sheet.append_row([author_name, course, professor, language, input_date, review_content])
-                   st.session_state['review_success_message'] = f'☕ 후기 감사해요! [{course}] 과목 후기가 저장됐어요!'
-                   st.session_state['review_mode'] = False
-                   st.rerun()
+
+                    st.session_state['review_success_message'] = f'☕ 후기 감사해요! [{course}] 과목 후기가 저장됐어요!'
+                    st.session_state['review_mode'] = False
+                    st.rerun()
                 except Exception as e:
                     st.error(f'저장 실패: {e}')
 
