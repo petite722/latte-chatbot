@@ -933,6 +933,7 @@ if user_input := (prompt or st.chat_input('궁금한 걸 입력하세요 / Ask a
         with st.spinner('☕ 선배들의 후기를 찾아보는 중...'):
             try:
                 from langchain.messages import HumanMessage
+                from langchain_core.messages import ToolMessage
                 # conversation_history 관리
                 history = st.session_state['conversation_history']
                 turn_start = len(history)
