@@ -1455,7 +1455,27 @@ def flatten_general_answer(answer):
         return answer
 
     except Exception:
-        return answer# 3. 여러 과목
+        return answer
+def get_comparison_sources_text(turn_result):
+    """course_comparison_tool이 가져온 문서들을 비교 답변용 텍스트로 정리한다."""
+    from langchain_core.messages import ToolMessage
+    comparison_docs = []
+    for message in turn_result["messages"]:
+        if isinstance(message, ToolMessage) and message.name == "course_comparison_tool":
+            artifact = getattr(message, "artifact", None)
+            if artifact:
+                comparison_docs.extend(artifact)
+    if not comparison_docs:
+        return ""
+    lines = []
+    for d in comparison_docs:
+        course = d.metadata.get("course", "")
+        professor = d.metadata.get("professor", "")
+        doc_type = d.metadata.get("type", "")
+        lines.append(f"[과목명: {course}] [교수: {professor}] [자료유형: {doc_type}]\n{d.page_content}")
+    return "\n\n---\n\n".join(lines)
+
+def is_general_func(result): ...        
 
 def is_general_func(result): return used_general_knowledge({'messages': result['messages']})
 
