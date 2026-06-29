@@ -1625,13 +1625,14 @@ with st.sidebar:
     st.markdown('SNU MBA 후배를 위한 AI 선배 챗봇')
     st.divider()
     st.markdown('**이런 질문을 해봐요:**')
-    st.markdown('※ 과목명은 한국어/영어 그대로 입력해주세요')
+    st.markdown('※ 과목명은 한국어/영어 그대로 입력해주세요  \nPlease use the exact course name in Korean or English')
     for ex in [
-        '박성호 교수님 Marketing Analytics 어때?',
-        '이제호 교수님 Strategy 어때?',
-        '팀플 적은 수업 추천해줘',
-        'KEIT R&D 기획 직무에 도움 되는 수업은?',
-        '후기 많은 과목 보여줘',
+        '박성호 교수님 Marketing Analytics 수업 어때?',
+        '박진수 교수님 수업 뭐 있어?',
+        'Portfolio Management랑 Financial Engineering 비교해줘',
+        'OO 회사 / OO 직무에 관심 있는데, 도움 되는 수업 추천해줘',
+        '후기 많은 과목 순서대로 보여줘',
+        '수강후기 남길게요',
     ]:
         if st.button(ex, key=ex):
             st.session_state['suggested'] = ex
