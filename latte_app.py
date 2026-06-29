@@ -368,14 +368,6 @@ def load_all():
     REVIEW_CHROMA_DIR = 'chroma_review_db'
     SYLLABUS_COLLECTION = 'latte_syllabus_db'
     REVIEW_COLLECTION = 'latte_review_db'
-   
-    def make_docs_fingerprint(docs):
-        h = hashlib.md5()
-        for doc in docs:
-            h.update(doc.page_content.encode('utf-8', errors='ignore'))
-            h.update(json.dumps(doc.metadata, sort_keys=True, ensure_ascii=False).encode('utf-8'))
-        return {'doc_count': len(docs), 'hash': h.hexdigest()}
-
 
     # -----------------------------
     # 1. 강의계획서 벡터DB
