@@ -379,11 +379,7 @@ def load_all():
         collection_name=SYLLABUS_COLLECTION,
         collection_metadata={'hnsw:space': 'cosine'},
     )
-    with open(SYLLABUS_FINGERPRINT_PATH, 'w', encoding='utf-8') as f:
-        json.dump(make_docs_fingerprint(syllabus_docs), f, ensure_ascii=False, indent=2)
-    print('syllabus DB 저장 완료:', syllabus_vectorstore._collection.count(), '개 문서')
-
-
+    
     # -----------------------------
     # 2. 수강후기 벡터DB
     # -----------------------------
@@ -394,11 +390,7 @@ def load_all():
         collection_name=REVIEW_COLLECTION,
         collection_metadata={'hnsw:space': 'cosine'},
     )
-    with open(REVIEW_FINGERPRINT_PATH, 'w', encoding='utf-8') as f:
-        json.dump(make_docs_fingerprint(review_docs), f, ensure_ascii=False, indent=2)
-    print('review DB 저장 완료:', review_vectorstore._collection.count(), '개 문서')
-
-
+   
     # syllabus + review 두 DB를 하나로 합친 통합 검색 래퍼
     class CombinedVectorStore:
         def __init__(self, *stores):
