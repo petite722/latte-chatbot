@@ -17,3 +17,4 @@ gdown
 gspread
 google-auth
 google-auth-oauthlib
+langchain-text-splitters
