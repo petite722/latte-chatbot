@@ -437,50 +437,32 @@ def load_all():
     # -----------------------------
     # 1. 강의계획서 벡터DB
     # -----------------------------
-    print('강의계획서 DB를 새로 만듭니다.')
     syllabus_vectorstore = Chroma.from_documents(
         documents=syllabus_docs,
         embedding=embeddings,
         collection_name=SYLLABUS_COLLECTION,
         collection_metadata={'hnsw:space': 'cosine'},
-        persist_directory=SYLLABUS_CHROMA_DIR,
     )
-    with open(SYLLABUS_FINGERPRINT_PATH, 'w', encoding='utf-8') as f:
-        json.dump(make_docs_fingerprint(syllabus_docs), f, ensure_ascii=False, indent=2)
-    print('syllabus DB 저장 완료:', syllabus_vectorstore._collection.count(), '개 문서')
-
-
     # -----------------------------
     # 2. 수강후기 벡터DB
     # -----------------------------
-    print('수강후기 DB를 새로 만듭니다.')
     review_vectorstore = Chroma.from_documents(
         documents=review_docs,
         embedding=embeddings,
         collection_name=REVIEW_COLLECTION,
         collection_metadata={'hnsw:space': 'cosine'},
-        persist_directory=REVIEW_CHROMA_DIR,
     )
-    with open(REVIEW_FINGERPRINT_PATH, 'w', encoding='utf-8') as f:
-        json.dump(make_docs_fingerprint(review_docs), f, ensure_ascii=False, indent=2)
-    print('review DB 저장 완료:', review_vectorstore._collection.count(), '개 문서')
-
-
     # syllabus + review 두 DB를 하나로 합친 통합 검색 래퍼
     class CombinedVectorStore:
         def __init__(self, *stores):
             self._stores = stores
-
         def similarity_search(self, query, k=10):
             k_each = max(1, k // len(self._stores))
             results = []
             for store in self._stores:
                 results.extend(store.similarity_search(query, k=k_each))
             return results[:k]
-
-
     vectorstore = CombinedVectorStore(syllabus_vectorstore, review_vectorstore)
-    print('통합 vectorstore 준비 완료')
 
     # ── Google Sheets 연결 ──
     review_sheet = None
