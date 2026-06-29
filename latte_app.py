@@ -175,7 +175,10 @@ def load_all():
         from google.oauth2.service_account import Credentials
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
                   'https://www.googleapis.com/auth/drive']
-        if 'GOOGLE_SHEETS_CREDENTIALS' in st.secrets:
+        if 'google_sheets' in st.secrets:
+            creds = Credentials.from_service_account_info(
+                json.loads(st.secrets['google_sheets']['credentials']), scopes=SCOPES)
+        elif 'GOOGLE_SHEETS_CREDENTIALS' in st.secrets:
             creds = Credentials.from_service_account_info(
                 json.loads(st.secrets['GOOGLE_SHEETS_CREDENTIALS']), scopes=SCOPES)
         else:
