@@ -181,8 +181,8 @@ def load_all():
                 'halogen-chemist-437121-t6-c46e0c6ddb1e.json', scopes=SCOPES)
         gc = gspread.authorize(creds)
         review_sheet = gc.open_by_key('1VZ60mjNmSb-rwde7uYvcF21Se39skhbnH2Tlz-mJ4ew').worksheet('reviews')
-    except Exception:
-        pass
+    except Exception as e:
+        st.warning(f"Google Sheets 연결 실패: {type(e).__name__}: {e}")
 
     # 8. 에이전트 초기화 (노트북 셀 30, 31 로직)
     from langchain.agents import create_agent
