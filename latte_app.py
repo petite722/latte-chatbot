@@ -704,7 +704,6 @@ def load_all():
 
        # 기출문제 원문 따로 저장 (Python이 직접 붙여서 LLM이 요약 못 하게)
        # 사람마다 기출문제 앞에 쓰는 표현이 다를 수 있어서 여러 키워드로 시도
-        global _exam_questions
         exam_texts = []
         EXAM_KEYWORDS = ['기출시험문제 공유', '기출시험문제', '시험기출문제', '기출문제', '기출 문제']
         for d in retrieved_docs:
