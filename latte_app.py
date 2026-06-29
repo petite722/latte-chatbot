@@ -96,7 +96,7 @@ def load_all():
     from langchain.tools import tool
     from langchain.chat_models import init_chat_model
     from langchain_tavily import TavilySearch
-    from langchain.text_splitter import RecursiveCharacterTextSplitter
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
     import gspread
     from google.oauth2.service_account import Credentials
 
