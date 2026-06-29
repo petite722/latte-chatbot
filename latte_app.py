@@ -166,14 +166,17 @@ def load_all():
 
     vectorstore = CombinedVS(syllabus_vs, review_vs)
 
-    # 7. Sheets 연결
+    python    # 7. Sheets 연결
     review_sheet = None
     try:
         import gspread
         from google.oauth2.service_account import Credentials
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets',
                   'https://www.googleapis.com/auth/drive']
-        if 'GOOGLE_SHEETS_CREDENTIALS' in st.secrets:
+        if 'google_sheets' in st.secrets:
+            creds = Credentials.from_service_account_info(
+                json.loads(st.secrets['google_sheets']['credentials']), scopes=SCOPES)
+        elif 'GOOGLE_SHEETS_CREDENTIALS' in st.secrets:
             creds = Credentials.from_service_account_info(
                 json.loads(st.secrets['GOOGLE_SHEETS_CREDENTIALS']), scopes=SCOPES)
         else:
@@ -182,7 +185,7 @@ def load_all():
         gc = gspread.authorize(creds)
         review_sheet = gc.open_by_key('1VZ60mjNmSb-rwde7uYvcF21Se39skhbnH2Tlz-mJ4ew').worksheet('reviews')
     except Exception as e:
-        st.warning(f"Google Sheets 연결 실패: {type(e).__name__}: {e}")
+        st.warning(f"Google Sheets 연결 실패: {e}")
 
     # 8. 에이전트 초기화 (노트북 셀 30, 31 로직)
     from langchain.agents import create_agent
