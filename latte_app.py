@@ -647,7 +647,6 @@ def load_all():
 
        # 기출문제 원문 따로 저장 (Python이 직접 붙여서 LLM이 요약 못 하게)
        # 사람마다 기출문제 앞에 쓰는 표현이 다를 수 있어서 여러 키워드로 시도
-        global _exam_questions
         exam_texts = []
         EXAM_KEYWORDS = ['기출시험문제 공유', '기출시험문제', '시험기출문제', '기출문제', '기출 문제']
         for d in retrieved_docs:
@@ -1404,7 +1403,6 @@ def flatten_general_answer(answer):
 def is_general_func(result): return used_general_knowledge({'messages': result['messages']})
 
 def ask(question):
-    global _exam_questions
     result = agent.invoke({'messages': [HumanMessage(question)]})
     answer = extract_text(result)
 
@@ -1774,7 +1772,6 @@ if user_input := (prompt or st.chat_input('궁금한 걸 입력하세요 / Ask a
                         if is_general:
                             answer = flatten_general_answer(answer)
 
-                        global _exam_questions
                         if _exam_questions:
                             answer += f'\n\n**시험기출문제:**\n{_exam_questions}'
                             _exam_questions = None
