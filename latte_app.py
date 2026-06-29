@@ -1605,6 +1605,9 @@ st.title('☕ 라떼는 말이야')
 st.markdown('**SNU MBA 선배들의 솔직한 수강후기 — AI가 정리해드려요**')
 st.markdown('※ 과목명은 한국어/영어 그대로 입력해주시면 더 정확해요 | Please use the exact course name for best results')
 
+if st.session_state.get('review_success_message'):
+    st.success(st.session_state.pop('review_success_message'))
+
 try:
     resources = load_all()
     all_docs = resources['all_docs']
@@ -1683,9 +1686,9 @@ JSON:"""
                     review_docs.append(new_doc)
                     if review_sheet:
                         review_sheet.append_row([author_name, course, professor, language, input_date, review_content])
-                    st.success(f'☕ 후기 감사해요! [{course}] 과목 후기가 저장됐어요!')
-                    st.session_state['review_mode'] = False
-                    st.rerun()
+                   st.session_state['review_success_message'] = f'☕ 후기 감사해요! [{course}] 과목 후기가 저장됐어요!'
+                   st.session_state['review_mode'] = False
+                   st.rerun()
                 except Exception as e:
                     st.error(f'저장 실패: {e}')
 
