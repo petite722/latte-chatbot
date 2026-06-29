@@ -34,7 +34,7 @@ h1 { color: #4A2C2A; }
 </style>
 """, unsafe_allow_html=True)
 
-
+_exam_questions = None
 @st.cache_resource(show_spinner="☕ 데이터 불러오는 중... (최초 실행 시 시간이 걸려요)")
 def load_all():
     import gdown
