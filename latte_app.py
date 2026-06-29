@@ -18,10 +18,12 @@ st.markdown("""
 .stApp { background-color: #FDF6EC; }
 [data-testid="stSidebar"] { background-color: #4A2C2A; }
 [data-testid="stSidebar"] * { color: #FDF6EC !important; }
-[data-testid="stSidebar"] .stButton button { 
-    color: #4A2C2A !important; 
+[data-testid="stSidebar"] button { 
     background-color: #FDF6EC !important;
-    border: none;
+    color: #4A2C2A !important;
+}
+[data-testid="stSidebar"] button p { 
+    color: #4A2C2A !important;
 }
 h1 { color: #4A2C2A; }
 </style>
