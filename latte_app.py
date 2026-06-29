@@ -184,7 +184,7 @@ def load_all():
     from langchain.tools import tool
     from langchain_tavily import TavilySearch
     from langchain_core.messages import ToolMessage
-    import pandas as pd as _pd
+    import pandas as _pd
 
     _exam_questions = None
 
