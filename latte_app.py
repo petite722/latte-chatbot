@@ -458,8 +458,12 @@ if user_input := (prompt or st.chat_input('궁금한 걸 입력하세요 / Ask a
                 result = resources['agent'].invoke({'messages': history})
                 st.session_state['conversation_history'] = result['messages']
                 content = result['messages'][-1].content
-                answer = content if isinstance(content, str) else '\n'.join(
-                    b.get('text','') for b in content if isinstance(b, dict))
+                if isinstance(content, str):
+                    answer = content
+                elif isinstance(content, list):
+                    answer = '\n'.join(b.get('text','') for b in content if isinstance(b, dict) and b.get('type') == 'text')
+                else:
+                    answer = str(content)
                 st.markdown(answer)
                 st.session_state['messages'].append({'role':'assistant','content':answer})
             except Exception as e:
