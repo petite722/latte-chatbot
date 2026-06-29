@@ -18,6 +18,11 @@ st.markdown("""
 .stApp { background-color: #FDF6EC; }
 [data-testid="stSidebar"] { background-color: #4A2C2A; }
 [data-testid="stSidebar"] * { color: #FDF6EC !important; }
+[data-testid="stSidebar"] .stButton button { 
+    color: #4A2C2A !important; 
+    background-color: #FDF6EC !important;
+    border: none;
+}
 h1 { color: #4A2C2A; }
 </style>
 """, unsafe_allow_html=True)
@@ -184,7 +189,7 @@ def load_all():
     from langchain.tools import tool
     from langchain_tavily import TavilySearch
     from langchain_core.messages import ToolMessage
-    import pandas as _pd
+    import pandas as pd as _pd
 
     _exam_questions = None
 
@@ -461,9 +466,20 @@ if user_input := (prompt or st.chat_input('궁금한 걸 입력하세요 / Ask a
                 if isinstance(content, str):
                     answer = content
                 elif isinstance(content, list):
-                    answer = '\n'.join(b.get('text','') for b in content if isinstance(b, dict) and b.get('type') == 'text')
+                    answer = '\n'.join(b.get('text','') for b in content 
+                                       if isinstance(b, dict) and b.get('type') == 'text')
                 else:
                     answer = str(content)
+                # {"value":"..."} 형태면 value만 추출
+                import json as _j
+                try:
+                    _parsed = _j.loads(answer)
+                    if isinstance(_parsed, dict) and 'value' in _parsed:
+                        answer = _parsed['value']
+                    elif isinstance(_parsed, dict) and len(_parsed) == 1:
+                        answer = list(_parsed.values())[0]
+                except Exception:
+                    pass
                 st.markdown(answer)
                 st.session_state['messages'].append({'role':'assistant','content':answer})
             except Exception as e:
