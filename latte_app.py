@@ -13,6 +13,17 @@ load_dotenv()
 
 st.set_page_config(page_title="라떼는 말이야 ☕", page_icon="☕", layout="wide")
 
+DEFAULT_SESSION_STATE = {
+    'messages': [],
+    'conversation_history': [],
+    'is_first_turn': True,
+    'review_mode': False,
+}
+
+for key, default in DEFAULT_SESSION_STATE.items():
+    if key not in st.session_state:
+        st.session_state[key] = default
+
 st.markdown("""
 <style>
 .stApp { background-color: #FDF6EC; }
@@ -1572,10 +1583,6 @@ st.title('☕ 라떼는 말이야')
 st.markdown('**SNU MBA 선배들의 솔직한 수강후기 — AI가 정리해드려요**')
 st.markdown('※ 과목명은 한국어/영어 그대로 입력해주시면 더 정확해요 | Please use the exact course name for best results')
 
-for key, default in [('messages', []), ('conversation_history', []), ('is_first_turn', True)]:
-    if key not in st.session_state:
-        st.session_state[key] = default
-
 try:
     resources = load_all()
     all_docs = resources['all_docs']
@@ -1660,7 +1667,10 @@ JSON:"""
                 except Exception as e:
                     st.error(f'저장 실패: {e}')
 
-if user_input := (prompt or st.chat_input('궁금한 걸 입력하세요 / Ask anything')):
+typed_input = st.chat_input('궁금한 걸 입력하세요 / Ask anything')
+user_input = prompt or typed_input
+
+if user_input:
     with st.chat_message('user'):
         st.markdown(user_input)
     st.session_state['messages'].append({'role': 'user', 'content': user_input})
@@ -1670,7 +1680,6 @@ if user_input := (prompt or st.chat_input('궁금한 걸 입력하세요 / Ask a
             try:
                 from langchain.messages import HumanMessage
                 from langchain_core.messages import ToolMessage
-
                 review_keywords = [
                     '수강후기', '후기 남', '후기를 남', '후기 입력', '후기남길',
                     'leave a review', 'write a review', 'submit a review',
@@ -1679,8 +1688,8 @@ if user_input := (prompt or st.chat_input('궁금한 걸 입력하세요 / Ask a
                 if any(kw in user_input.lower() for kw in review_keywords):
                     st.session_state['review_mode'] = True
                     full_answer = '📝 후기 입력 모드예요! 아래 폼에 입력해주세요.'
-                    st.markdown(full_answer)
                     st.session_state['messages'].append({'role': 'assistant', 'content': full_answer})
+                    st.rerun()
                 else:
                     conversation_history = st.session_state['conversation_history']
                     turn_start = len(conversation_history)
