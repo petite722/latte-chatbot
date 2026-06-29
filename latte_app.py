@@ -1162,6 +1162,28 @@ def collect_searched_pairs(result):
                     pairs.append(pair)
     return pairs
 
+def get_comparison_sources_text(result):
+    """course_comparison_tool이 가져온 문서들을 비교 답변용 텍스트로 정리한다."""
+    sources = []
+
+    for message in result['messages']:
+        if isinstance(message, ToolMessage) and message.name == 'course_comparison_tool':
+            artifact = getattr(message, 'artifact', None)
+            if not artifact:
+                continue
+
+            for d in artifact:
+                course = d.metadata.get('course', '')
+                professor = d.metadata.get('professor', '')
+                doc_type = d.metadata.get('type', '')
+                content = d.page_content
+
+                sources.append(
+                    f"[type: {doc_type}] [course: {course}] [professor: {professor}]\n{content}"
+                )
+
+    return "\n\n---\n\n".join(sources)
+
 def get_header_info(result, answer):
     is_prof_tool = any(isinstance(m, ToolMessage) and m.name == PROFESSOR_TOOL_NAME for m in result['messages'])
 
