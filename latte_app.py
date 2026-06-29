@@ -1460,7 +1460,6 @@ def flatten_general_answer(answer):
 def is_general_func(result): return used_general_knowledge({'messages': result['messages']})
 
 def ask(question):
-    global _exam_questions
     result = agent.invoke({'messages': [HumanMessage(question)]})
     answer = extract_text(result)
 
@@ -1765,7 +1764,6 @@ if user_input := (prompt or st.chat_input('궁금한 걸 입력하세요 / Ask a
                         if is_general:
                             answer = flatten_general_answer(answer)
 
-                        global _exam_questions
                         if _exam_questions:
                             answer += f'\n\n**시험기출문제:**\n{_exam_questions}'
                             _exam_questions = None
