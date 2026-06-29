@@ -173,7 +173,7 @@ def load_all():
 
     vectorstore = CombinedVS(syllabus_vs, review_vs)
 
-    python    # 7. Sheets 연결
+    # 7. Sheets 연결
     review_sheet = None
     try:
         import gspread
