@@ -368,10 +368,7 @@ def load_all():
     REVIEW_CHROMA_DIR = 'chroma_review_db'
     SYLLABUS_COLLECTION = 'latte_syllabus_db'
     REVIEW_COLLECTION = 'latte_review_db'
-    SYLLABUS_FINGERPRINT_PATH = Path(SYLLABUS_CHROMA_DIR) / 'syllabus_fingerprint.json'
-    REVIEW_FINGERPRINT_PATH = Path(REVIEW_CHROMA_DIR) / 'review_fingerprint.json'
-
-
+   
     def make_docs_fingerprint(docs):
         h = hashlib.md5()
         for doc in docs:
