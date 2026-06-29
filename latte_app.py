@@ -23,6 +23,13 @@ st.markdown("""
     background-color: #FDF6EC !important;
     border: none;
 }
+[data-testid="stSidebar"] button { 
+    background-color: #FDF6EC !important;
+    color: #4A2C2A !important;
+}
+[data-testid="stSidebar"] button p { 
+    color: #4A2C2A !important;
+}
 h1 { color: #4A2C2A; }
 </style>
 """, unsafe_allow_html=True)
