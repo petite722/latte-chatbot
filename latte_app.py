@@ -1552,17 +1552,17 @@ def ask(question):
 
     # 5. 후기 집계 결과를 테이블로 변환
     if is_count:
-    try:
-        import json as _j
-        _parsed = _j.loads(answer)
-        if isinstance(_parsed, list):
-            lines = ['| 순위 | 과목명 | 후기 수 |', '|---|---|---|']
-            for i, item in enumerate(_parsed, 1):
-                review_count = str(item.get('후기수', '')).replace('건', '').strip()
-                lines.append(f"| {i} | {item.get('과목명','')} | {review_count}건 |")
-            answer = '\n'.join(lines)
-    except Exception:
-        pass
+        try:
+            import json as _j
+            _parsed = _j.loads(answer)
+            if isinstance(_parsed, list):
+                lines = ['| 순위 | 과목명 | 후기 수 |', '|---|---|---|']
+                for i, item in enumerate(_parsed, 1):
+                    review_count = str(item.get('후기수', '')).replace('건', '').strip()
+                    lines.append(f"| {i} | {item.get('과목명','')} | {review_count}건 |")
+                answer = '\n'.join(lines)
+        except Exception:
+            pass
 
     # 6. 일반 답변이 JSON으로 오면 {} 없이 value만 이어 붙임
     if is_general:
