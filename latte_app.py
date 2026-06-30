@@ -512,7 +512,6 @@ def load_all():
     from langchain.chat_models import init_chat_model
 
     # 기출문제 원문 임시 저장 (Python이 직접 붙여서 LLM이 요약 못 하게)
-    _exam_questions = None
 
     def normalize_name(text: str) -> set[str]:
         """이름 비교를 위해 쉼표/하이픈/슬래시를 다 공백으로 바꾸고 단어 단위로 쪼갠다.
@@ -525,6 +524,7 @@ def load_all():
     @tool(response_format='content_and_artifact')
     def retriever_tool(query: str) -> tuple[str, list[LCDocument]]:
         """강의계획서와 강의 후기에서 질문과 관련된 내용을 검색한다."""
+        global _exam_questions
         retrieved_docs = vectorstore.similarity_search(query, k=10)
         query_lower = query.lower()
 
