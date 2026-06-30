@@ -1163,6 +1163,37 @@ def collect_searched_pairs(result):
                     pairs.append(pair)
     return pairs
 
+def extract_exam_questions_from_result(result):
+    """검색된 review 문서에서 기출문제 원문을 직접 뽑아낸다."""
+    exam_texts = []
+    exam_keywords = ['기출시험문제 공유', '기출시험문제', '시험기출문제', '기출문제', '기출 문제']
+
+    for message in result['messages']:
+        if isinstance(message, ToolMessage) and message.name in TOOL_NAMES:
+            artifact = getattr(message, 'artifact', None)
+            if not artifact:
+                continue
+
+            for d in artifact:
+                if d.metadata.get('type') != 'review':
+                    continue
+
+                content = d.page_content
+
+                for keyword in exam_keywords:
+                    if keyword in content:
+                        exam_part = content.split(keyword, 1)[1].strip()
+
+                        if exam_part.startswith(':'):
+                            exam_part = exam_part[1:].strip()
+
+                        if exam_part:
+                            exam_texts.append(exam_part)
+
+                        break
+
+    return '\n\n'.join(exam_texts)
+
 def get_comparison_sources_text(result):
     """course_comparison_tool이 가져온 문서들을 비교 답변용 텍스트로 정리한다."""
     sources = []
@@ -1570,9 +1601,10 @@ def ask(question):
         answer = flatten_general_answer(answer)
 
     # 기출문제 원문 있으면 LLM 답변 뒤에 직접 붙임
-    if _exam_questions:
-        answer += f'\n\n**시험기출문제:**\n{_exam_questions}'
-        _exam_questions = None
+    exam_questions = extract_exam_questions_from_result(turn_result)
+
+    if exam_questions:
+        answer += f'\n\n**시험기출문제:**\n{exam_questions}'
 
     return {'question': question, 'answer': answer, 'n_reviews': n_reviews, 'result': result, 'header': header}
 
