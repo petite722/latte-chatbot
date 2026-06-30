@@ -666,12 +666,7 @@ def load_all():
     '시험기출문제',
     '기출문제',
     '기출 문제',
-    '시험문제',
-    'sample exam',
-    'practice exam',
-    'Sample exam',
-    'Practice exam',
-]
+    '시험문제']
         for d in retrieved_docs:
             if d.metadata.get('type') == 'review':
                 content = d.page_content
@@ -1175,7 +1170,7 @@ def collect_searched_pairs(result):
     return pairs
 
 def extract_exam_questions_from_result(result):
-    """검색된 review 문서에서 시험/기출 관련 원문을 직접 뽑아낸다."""
+    """검색된 review 문서에서 명시적으로 적힌 기출문제 원문만 뽑아낸다."""
     exam_texts = []
     exam_keywords = [
         '기출시험문제 공유',
@@ -1183,11 +1178,6 @@ def extract_exam_questions_from_result(result):
         '시험기출문제',
         '기출문제',
         '기출 문제',
-        '시험문제',
-        'sample exam',
-        'practice exam',
-        'Sample exam',
-        'Practice exam',
     ]
 
     for message in result['messages']:
@@ -1204,13 +1194,23 @@ def extract_exam_questions_from_result(result):
 
                 for keyword in exam_keywords:
                     if keyword in content:
-                        if keyword in ['시험문제', 'sample exam', 'practice exam', 'Sample exam', 'Practice exam']:
-                            exam_part = content.strip()
-                        else:
-                            exam_part = content.split(keyword, 1)[1].strip()
+                        exam_part = content.split(keyword, 1)[1].strip()
 
-                            if exam_part.startswith(':'):
-                                exam_part = exam_part[1:].strip()
+                        if exam_part.startswith(':'):
+                            exam_part = exam_part[1:].strip()
+
+                        # 혹시 뒤에 다른 후기 메타데이터가 붙으면 잘라냄
+                        stop_markers = [
+                            '[과목명:',
+                            '[교수:',
+                            '[언어:',
+                            '[수강시기:',
+                            '후기:',
+                        ]
+
+                        for marker in stop_markers:
+                            if marker in exam_part:
+                                exam_part = exam_part.split(marker, 1)[0].strip()
 
                         if exam_part:
                             exam_texts.append(exam_part)
