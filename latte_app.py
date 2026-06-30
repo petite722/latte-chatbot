@@ -675,7 +675,7 @@ def load_all():
         for d in retrieved_docs:
             if d.metadata.get('type') == 'review':
                 content = d.page_content
-                for keyword in EXAM_KEYWORDS:
+                for keyword in exam_keywords:
                     if keyword in content:
                         # 키워드 뒤의 내용(실제 문제)만 잘라냄
                         exam_part = content.split(keyword, 1)[1].strip()
@@ -1218,6 +1218,7 @@ def extract_exam_questions_from_result(result):
                         break
 
     return '\n\n'.join(exam_texts)
+    
 def get_comparison_sources_text(result):
     """course_comparison_tool이 가져온 문서들을 비교 답변용 텍스트로 정리한다."""
     sources = []
