@@ -660,7 +660,18 @@ def load_all():
        # 기출문제 원문 따로 저장 (Python이 직접 붙여서 LLM이 요약 못 하게)
        # 사람마다 기출문제 앞에 쓰는 표현이 다를 수 있어서 여러 키워드로 시도
         exam_texts = []
-        EXAM_KEYWORDS = ['기출시험문제 공유', '기출시험문제', '시험기출문제', '기출문제', '기출 문제']
+        exam_keywords = [
+    '기출시험문제 공유',
+    '기출시험문제',
+    '시험기출문제',
+    '기출문제',
+    '기출 문제',
+    '시험문제',
+    'sample exam',
+    'practice exam',
+    'Sample exam',
+    'Practice exam',
+]
         for d in retrieved_docs:
             if d.metadata.get('type') == 'review':
                 content = d.page_content
@@ -1164,9 +1175,20 @@ def collect_searched_pairs(result):
     return pairs
 
 def extract_exam_questions_from_result(result):
-    """검색된 review 문서에서 기출문제 원문을 직접 뽑아낸다."""
+    """검색된 review 문서에서 시험/기출 관련 원문을 직접 뽑아낸다."""
     exam_texts = []
-    exam_keywords = ['기출시험문제 공유', '기출시험문제', '시험기출문제', '기출문제', '기출 문제']
+    exam_keywords = [
+        '기출시험문제 공유',
+        '기출시험문제',
+        '시험기출문제',
+        '기출문제',
+        '기출 문제',
+        '시험문제',
+        'sample exam',
+        'practice exam',
+        'Sample exam',
+        'Practice exam',
+    ]
 
     for message in result['messages']:
         if isinstance(message, ToolMessage) and message.name in TOOL_NAMES:
@@ -1182,10 +1204,13 @@ def extract_exam_questions_from_result(result):
 
                 for keyword in exam_keywords:
                     if keyword in content:
-                        exam_part = content.split(keyword, 1)[1].strip()
+                        if keyword in ['시험문제', 'sample exam', 'practice exam', 'Sample exam', 'Practice exam']:
+                            exam_part = content.strip()
+                        else:
+                            exam_part = content.split(keyword, 1)[1].strip()
 
-                        if exam_part.startswith(':'):
-                            exam_part = exam_part[1:].strip()
+                            if exam_part.startswith(':'):
+                                exam_part = exam_part[1:].strip()
 
                         if exam_part:
                             exam_texts.append(exam_part)
@@ -1193,7 +1218,6 @@ def extract_exam_questions_from_result(result):
                         break
 
     return '\n\n'.join(exam_texts)
-
 def get_comparison_sources_text(result):
     """course_comparison_tool이 가져온 문서들을 비교 답변용 텍스트로 정리한다."""
     sources = []
@@ -1600,15 +1624,6 @@ def ask(question):
     if is_general:
         answer = flatten_general_answer(answer)
 
-    # 기출문제 원문 있으면 LLM 답변 뒤에 직접 붙임
-    exam_questions = extract_exam_questions_from_result(turn_result)
-
-    if exam_questions:
-        answer += f'\n\n**시험기출문제:**\n{exam_questions}'
-
-    return {'question': question, 'answer': answer, 'n_reviews': n_reviews, 'result': result, 'header': header}
-
-
 # ── 사이드바 ──
 with st.sidebar:
     st.markdown('## ☕ 라떼는 말이야')
@@ -1849,9 +1864,10 @@ if user_input:
                         if is_general:
                             answer = flatten_general_answer(answer)
 
-                        if _exam_questions:
-                            answer += f'\n\n**시험기출문제:**\n{_exam_questions}'
-                            _exam_questions = None
+                        exam_questions = extract_exam_questions_from_result(turn_result)
+
+                        if exam_questions:
+                            answer += f'\n\n**시험기출문제:**\n{exam_questions}'
 
                         if st.session_state['is_first_turn'] and not is_general and not is_career and not is_count and not is_comparison:
                             if question_is_english:
