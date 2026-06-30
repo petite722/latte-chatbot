@@ -525,6 +525,7 @@ def load_all():
     def retriever_tool(query: str) -> tuple[str, list[LCDocument]]:
         """강의계획서와 강의 후기에서 질문과 관련된 내용을 검색한다."""
         global _exam_questions
+        
         retrieved_docs = vectorstore.similarity_search(query, k=10)
         query_lower = query.lower()
 
@@ -666,7 +667,7 @@ def load_all():
                 for keyword in EXAM_KEYWORDS:
                     if keyword in content:
                         # 키워드 뒤의 내용(실제 문제)만 잘라냄
-                        exam_part = content.split(keyword)[1].strip()
+                        exam_part = content.split(keyword, 1)[1].strip()
                         # 키워드 바로 뒤에 ':'가 붙어있으면 제거 (예: '기출문제: 1. ...')
                         if exam_part.startswith(':'):
                             exam_part = exam_part[1:].strip()
