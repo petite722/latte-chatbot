@@ -1633,7 +1633,7 @@ if st.session_state.get('review_mode'):
         st.markdown('### 📝 수강후기 입력')
         review_text = st.text_area(
             '과목명, 교수님, 후기 내용을 자유롭게 입력해주세요!',
-            placeholder='예: 박진수 교수님 AI 수업 들었는데 속도가 빠르고 코딩 실습이 많았어요'
+            placeholder='예: 박진수 교수님 AI 수업 들었는데 AI를 이해하는데 도움이 되었습니다'
         )
         author = st.text_input('이름/닉네임 (선택)', placeholder='익명')
         col_submit, col_cancel = st.columns(2)
